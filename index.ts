@@ -59,9 +59,11 @@ const voiceTextMap = new Map(Object.entries(config.voiceTextChnList))
       const oldChn = voiceTextMap.get(oldState.channelID)
       const newChn = voiceTextMap.get(newState.channelID)
       if (oldChn) {
+        if (newState.channelID === oldState.channelID) {return}
         overwriteTextChPermission(oldChn, newState, false)
       }
       if (newChn) {
+        if (newState.channelID === oldState.channelID) {return}
         overwriteTextChPermission(newChn, newState, true)
       }
       return
