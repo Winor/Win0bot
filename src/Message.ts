@@ -1,18 +1,14 @@
-import * as config from '../config.json'
-import Discord from 'discord.js'
-
-Discord.Structures.extend('Message', Message => {
-  class w0bMessage extends Message {
-    private hasPrefix: boolean
+import * as config from './config.json'
+export default class Message {
+    hasPrefix: boolean
     args: string[]
     hasCommand: string | false
-    constructor(client: Discord.Client, data: object, channel: Discord.TextChannel | Discord.DMChannel | Discord.NewsChannel) {
-      super(client, data, channel);
-      this.hasPrefix = this.content.charAt(0) === config.prefix
-      this.args = this.content.split(' ')
-      this.hasCommand = (this.hasPrefix) ? this.args[0].replace(config.prefix, '') : false
-    }
-  }
+    magicWord: string
 
-  return w0bMessage;
-});
+    constructor(content: string){
+      this.hasPrefix = content.charAt(0) === config.prefix
+      this.args = content.split(' ')
+      this.hasCommand = (this.hasPrefix) ? this.args[0].replace(config.prefix, '') : false
+      this.magicWord = this.args[0]
+    }
+}

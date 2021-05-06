@@ -8,10 +8,18 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
             if(file.endsWith('js')) {
                 const cmdFile = await import(`${__dirname}//robot_modules//${file}`)
                 const cmd = new cmdFile.default
-                if(cmd.hear) {
-                    listen.set(cmd.hear,cmd)
-                } else {
+                if((cmd.hear) && (cmd.cmdTriggers)) {
+                    const newArray = cmd.hear.concat(cmd.cmdTriggers)
+                    listen.set(newArray,cmd)
+                    return
+                } 
+                if(cmd.cmdTriggers) {
                     listen.set(cmd.cmdTriggers, cmd)
+                    return
+                }
+                if(cmd.hear) {
+                    listen.set(cmd.hear, cmd)
+                    return
                 }
             }
         })
@@ -22,7 +30,7 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
 
 function contains(msg: w0bMessage): string {
     for (const [key, value] of listen) {
-        if (key.includes(msg.hasCommand)) {
+        if (key.includes(msg.magicWord)) {
             value.run(msg)
         }
     }

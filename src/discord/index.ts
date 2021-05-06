@@ -1,10 +1,10 @@
-import * as config from './config.json'
-import client from  "./src/djsClient"
-import './src/Message'
-import contains from './src/listenerMap'
+import * as config from '../config.json'
+import client from  "./djsClient"
+import Message from './adapter'
+import contains from '../listenerMap'
 import type { TextChannel, VoiceState, Activity } from 'discord.js'
 
-client.login(config.token)
+client.login(config.discordToken)
 
 client.on('ready', () => {
     if(client.user) {
@@ -14,8 +14,9 @@ client.on('ready', () => {
 
 // on msg
   client.on('message', msg => {
-    if ((msg.hasCommand) && (!msg.author.bot)) {
-      contains(msg)
+    const w0bMsg = new Message(msg)
+    if (!msg.author.bot) {
+      contains(w0bMsg)
     }
   })
 
@@ -38,6 +39,10 @@ client.on('ready', () => {
 const voiceTextMap = new Map(Object.entries(config.voiceTextChnList))
 
   client.on('voiceStateUpdate', (oldState, newState) => {
+
+    if ((newState.member?.user.bot) || (oldState.member?.user.bot)) {
+      return
+    }
 
     if ((newState.channelID) && (!oldState.channelID)) {
       const newChn = voiceTextMap.get(newState.channelID)
