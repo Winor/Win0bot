@@ -3,14 +3,16 @@
     "target": "ES2018",
     "module": "commonjs",
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "resolveJsonModule": true,
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "composite": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "keyofStringsOnly": true
   },
-  "include": ["src","config.json","package.json","index.ts"]
+  "include": ["src/*.json", "src"],
+  "exclude": ["src/robot_modules/old/*"]
 }

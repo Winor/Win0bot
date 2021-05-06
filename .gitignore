@@ -4,3 +4,4 @@ config.json
 tsconfig.tsbuildinfo
 src/events/
 package-lock.json
+.env
