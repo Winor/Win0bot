@@ -1,7 +1,8 @@
 import Commend from '../Commend'
 import { w0bMessage } from '../types'
 
-import config from '../../config.json'
+import config from '../config.json'
+import { Message } from 'discord.js';
 
 function upperCaseString(string: string) {
     const rolename = string.toLowerCase();
@@ -13,15 +14,17 @@ export default class Echo extends Commend {
         super({
             name: 'Give Role',
             cmd: ['role'],
-            hear: false
+            hear: false,
+            platform: "discord"
         })
     }
 
-    run(msg: w0bMessage): void {
-        if (msg.args[1]) {
-            const action = upperCaseString(msg.args[1])
+    run(dmsg: w0bMessage): void {
+        const msg = dmsg.raw as Message
+        if (dmsg.args[1]) {
+            const action = upperCaseString(dmsg.args[1])
             const isAction = (action === 'Give') || (action === 'Remove')
-            const roleName = msg.args[2] ? upperCaseString(msg.args[2]) : false
+            const roleName = dmsg.args[2] ? upperCaseString(dmsg.args[2]) : false
             if (isAction && roleName) {
                 const guildRole = msg.guild?.roles.cache.find((r => r.name === roleName))
                 if (guildRole) {

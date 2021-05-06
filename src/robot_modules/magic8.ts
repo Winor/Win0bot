@@ -1,13 +1,14 @@
 import Commend from '../Commend'
-import { w0bMessage } from '../types'
+import type w0bMessage from '../discord/adapter'
 
 export default class Magic8 extends Commend {
     private magic8Eng: string[];
     constructor() {
         super({
             name: 'magic8',
-            cmd: ['magic8', 'mg8'],
-            hear: false
+            cmd: ['magic8', 'm8'],
+            hear: false,
+            platform: "any"
         })
         this.magic8Eng = [
             "It is certain",
@@ -33,7 +34,11 @@ export default class Magic8 extends Commend {
         ]
     }
 
-    run(msg: w0bMessage): void {
-        msg.channel.send(this.magic8Eng[Math.floor(Math.random() * this.magic8Eng.length)])
+    async run(msg: w0bMessage): Promise<void> {
+        try {
+            await msg.back(this.magic8Eng[Math.floor(Math.random() * this.magic8Eng.length)])
+        } catch (e) {
+            console.log(e)
+        }
     }
 }

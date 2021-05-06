@@ -1,17 +1,23 @@
 import Commend from '../Commend'
-import { w0bMessage } from '../types'
+import type w0bMessage from '../discord/adapter'
 
 export default class Echo extends Commend {
 constructor() {
     super({
         name: 'echo',
         cmd: ['echo', 'ec'],
-        hear: false
+        hear: false,
+        platform: "any",
+        lvl: 0
     })
 }
 
-run(msg: w0bMessage): void {
-    msg.args.shift()
-    msg.channel.send(msg.args.join(' '))
+async run(msg: w0bMessage): Promise<void> {
+    try {
+        msg.args.shift()
+        await msg.back(msg.args.join(' '))
+    } catch (e) {
+        console.log(e)
+    }   
 }
 }
