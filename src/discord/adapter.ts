@@ -5,7 +5,7 @@ export default class extends w0bMessage {
     raw: Message
 
     constructor(msg: Message) {
-        super(msg.content)
+        super(msg.content, "discord")
         this.raw = msg
     }
 

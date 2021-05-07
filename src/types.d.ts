@@ -9,6 +9,7 @@ interface w0bMessage {
     hasCommand: string | false
     magicWord: string
     raw: Discord.Message | Context<MountMap["text"]>
+    platform: "discord" | "telegram"
 }
 
 type MountMap = {

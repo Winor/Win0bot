@@ -31,6 +31,7 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
 function contains(msg: w0bMessage): string {
     for (const [key, value] of listen) {
         if (key.includes(msg.magicWord)) {
+            if ((value.platform === msg.platform) || (value.platform === "any"))
             value.run(msg)
         }
     }

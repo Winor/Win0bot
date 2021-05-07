@@ -7,7 +7,7 @@ export default class extends w0bMessage {
     raw: Context<MountMap["text"]>
     
     constructor(msg: Context<MountMap["text"]>) {
-        super(msg.message.text)
+        super(msg.message.text, "telegram")
         this.raw = msg
     }
 
