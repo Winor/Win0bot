@@ -8,7 +8,7 @@ interface w0bMessage {
     args: string[]
     hasCommand: string | false
     magicWord: string
-    raw: Discord.Message | Context<MountMap["text"]>
+    raw: Discord.Message | Context<MountMap["text"]> | Interaction
     platform: "discord" | "telegram"
 }
 

@@ -1,3 +1,4 @@
+import { Message } from 'discord.js';
 import Commend from '../Commend'
 import type w0bMessage from '../discord/adapter'
 import player from '../discord/voice';
@@ -15,7 +16,7 @@ export default class Music extends Commend {
     async run(msg: w0bMessage): Promise<void> {
         try {
             msg.args.shift()
-            player.play(msg.raw, msg.args.join(' '));
+            player.play(msg.raw as Message, msg.args.join(' '));
         } catch (e) {
             console.log(e)
         }

@@ -1,16 +1,24 @@
-import type { Message } from "discord.js";
+import type { Interaction, Message } from "discord.js";
 import w0bMessage from "../Message"
 
-export default class extends w0bMessage {
-    raw: Message
+function isMsg(src: Message | Interaction): src is Message {
+    return (src as Message).attachments !== undefined;
+  }
 
-    constructor(msg: Message) {
-        super(msg.content, "discord")
-        this.raw = msg
+export default class extends w0bMessage {
+    raw: Message | Interaction
+
+    constructor(raw: Message | Interaction, msg: string) {
+        super(msg, "discord")
+        this.raw = raw
     }
 
-    async back (msg: string): Promise<Message> {
-        return await this.raw.channel.send(msg);
+    async back (msg: string): Promise<Message | void> {
+        if (isMsg(this.raw)) {
+            return await this.raw.channel.send(msg);
+        }
+        if (!this.raw.isCommand()) return;
+        return await this.raw.reply(msg)
     }
 
     async edit (oldMsg: Message, newMsg: string): Promise<Message> {

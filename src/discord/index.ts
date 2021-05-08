@@ -1,24 +1,49 @@
 import * as config from '../config.json'
 import client from  "./djsClient"
 import Message from './adapter'
-import contains from '../listenerMap'
+import contains, {commandData} from '../listenerMap'
 import type { TextChannel, VoiceState, Activity } from 'discord.js'
 
 client.login(config.discordToken)
 
+// on rdy
 client.on('ready', () => {
     if(client.user) {
         console.log(`Logged in as ${client.user.tag}!`);
+        //client.user.setAvatar('./logo.png')
+
+        // delete old cmds
+        client.guilds.cache.get('196376973084327936')?.commands.fetch().then(
+          (cmd) => {
+            cmd.forEach(elm => {
+              client.guilds.cache.get('196376973084327936')?.commands.delete(elm)
+            });
+          }
+        )
+
+        // add new cmds
+        commandData.forEach(command => {
+          // client.application?.commands.create(command);
+          client.guilds.cache.get('196376973084327936')?.commands.create(command);
+          
+        });
     }
 })
 
 // on msg
   client.on('message', msg => {
-    const w0bMsg = new Message(msg)
+    const w0bMsg = new Message(msg, msg.content)
     if (!msg.author.bot) {
       contains(w0bMsg)
     }
   })
+
+  // on interaction
+  client.on('interaction', interaction => {
+    if (!interaction.isCommand()) return;
+    const w0bMsg = new Message(interaction, interaction.commandName)
+    contains(w0bMsg)
+  });
 
   // on voice
   async function overwriteTextChPermission (textCH: string, voiceState: VoiceState, view: boolean) {

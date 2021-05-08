@@ -1,6 +1,8 @@
+import type { ApplicationCommandData } from 'discord.js';
 import fs from 'fs'
 import { w0bMessage } from './types';
 const listen = new Map();
+export const commandData:ApplicationCommandData[] = []
 
 fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
     try{
@@ -8,6 +10,14 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
             if(file.endsWith('js')) {
                 const cmdFile = await import(`${__dirname}//robot_modules//${file}`)
                 const cmd = new cmdFile.default
+
+                if(cmd.platform !== "telegram") {
+                    commandData.push({
+                        name: cmd.name,
+                        description: cmd.description ? cmd.description : "Runs a command"
+                    })  
+                }
+                
                 if((cmd.hear) && (cmd.cmdTriggers)) {
                     const newArray = cmd.hear.concat(cmd.cmdTriggers)
                     listen.set(newArray,cmd)

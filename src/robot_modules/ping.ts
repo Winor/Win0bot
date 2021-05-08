@@ -13,8 +13,7 @@ constructor() {
 
 async run (message: w0bMessage): Promise<void> {
     try {
-      const msg = await message.back("🏓 Ping!");
-      message.edit(msg ,`🏓 Pong! (Roundtrip took: ${msg.createdTimestamp - message.raw.createdTimestamp}ms. 💙`);
+      await message.back("🏓 Pong!");
     } catch (e) {
       console.log(e);
     }
