@@ -6,7 +6,8 @@ constructor() {
     super({
         name: 'ping',
         cmd: ['ping', 'p'],
-        hear: false,
+        hear: [],
+        globalHear: [],
         platform: "any"
     })
 }

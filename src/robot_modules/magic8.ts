@@ -7,7 +7,8 @@ export default class Magic8 extends Commend {
         super({
             name: 'magic8',
             cmd: ['magic8', 'm8'],
-            hear: false,
+            hear: [],
+            globalHear: [],
             platform: "any"
         })
         this.magic8Eng = [

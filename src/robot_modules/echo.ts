@@ -6,9 +6,16 @@ constructor() {
     super({
         name: 'echo',
         cmd: ['echo', 'ec'],
-        hear: false,
+        hear: [],
+        globalHear: [],
         platform: "any",
-        lvl: 0
+        lvl: 0,
+        discord: [{
+            name: 'input',
+            type: 'STRING',
+            description: 'The input which should be echoed back',
+            required: true,
+          }]
     })
 }
 

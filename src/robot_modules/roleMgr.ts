@@ -1,5 +1,5 @@
 import Commend from '../Commend'
-import { w0bMessage } from '../types'
+import type w0bMessage from '../discord/adapter'
 
 import config from '../config.json'
 import { Message } from 'discord.js';
@@ -12,46 +12,53 @@ function upperCaseString(string: string) {
 export default class Echo extends Commend {
     constructor() {
         super({
-            name: 'Give Role',
+            name: 'role',
             cmd: ['role'],
-            hear: false,
-            platform: "discord"
+            hear: [],
+            globalHear: [],
+            platform: "discord",
+            discord: [{
+                name: 'input',
+                type: 'STRING',
+                description: 'give/remove role name',
+                required: true,
+              }]
         })
     }
 
-    run(dmsg: w0bMessage): void {
-        const msg = dmsg.raw as Message
-        if (dmsg.args[1]) {
-            const action = upperCaseString(dmsg.args[1])
+    async run(msg: w0bMessage): Promise<void> {
+        const dmsg = msg.raw as Message
+        if (msg.args[1]) {
+            const action = upperCaseString(msg.args[1])
             const isAction = (action === 'Give') || (action === 'Remove')
-            const roleName = dmsg.args[2] ? upperCaseString(dmsg.args[2]) : false
+            const roleName = msg.args[2] ? upperCaseString(msg.args[2]) : false
             if (isAction && roleName) {
-                const guildRole = msg.guild?.roles.cache.find((r => r.name === roleName))
+                const guildRole = dmsg.guild?.roles.cache.find((r => r.name === roleName))
                 if (guildRole) {
-                    if (config.effectiveRoles.includes(guildRole.id)) { msg.channel.send('Cannot give or remove effective roles'); return }
-                    const memberRole = msg.member?.roles.cache.find((r => r.name === roleName))
+                    if (config.effectiveRoles.includes(guildRole.id)) { msg.back('Cannot give or remove effective roles'); return }
+                    const memberRole = dmsg.member?.roles.cache.find((r => r.name === roleName))
                     if (action === 'Give') {
                         if (!memberRole) {
-                            msg.member?.roles.add(guildRole)
-                            msg.channel.send(`Gave role ${guildRole.name} to ${msg.member}`)
+                            dmsg.member?.roles.add(guildRole)
+                            msg.back(`Gave role ${guildRole.name} to ${dmsg.member}`)
                             return
                         }
-                        msg.channel.send(`${msg.member} already possess role ${guildRole.name}`)
+                        msg.back(`${dmsg.member} already possess role ${guildRole.name}`)
                         return
                     }
                     if (action === 'Remove') {
                         if (memberRole) {
-                            msg.member?.roles.remove(guildRole)
-                            msg.channel.send(`Taken role ${guildRole.name} from ${msg.member}`)
+                            dmsg.member?.roles.remove(guildRole)
+                            msg.back(`Taken role ${guildRole.name} from ${dmsg.member}`)
                             return
                         }
-                        msg.channel.send(`${msg.member} dose not have role ${guildRole.name}`)
+                        msg.back(`${dmsg.member} dose not have role ${guildRole.name}`)
                     }
                 }
-                msg.channel.send('Role not found')
+                msg.back('Role not found')
                 return
             }
-            msg.channel.send('Invalid arguments')
+            msg.back('Invalid arguments')
         }
     }
 }

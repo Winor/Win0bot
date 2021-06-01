@@ -8,6 +8,7 @@ export default class Rami extends Commend {
             name: 'rami',
             cmd: ['rami'],
             hear: ['@Ramvader', 'rami', 'רמי', '<@!358373568939294737>'],
+            globalHear: [],
             platform: "any"
         })
         this.rami = [
@@ -26,7 +27,8 @@ export default class Rami extends Commend {
             "אני מגיע מתי שתגידו",
             "באו",
             "תכף מגיע",
-            "מוצי מקבל ובא"
+            "מוצי מקבל ובא",
+            "רגע אני מסיים לאכול דגגגג"
         ]
     }
 
