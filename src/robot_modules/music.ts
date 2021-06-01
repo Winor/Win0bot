@@ -7,8 +7,9 @@ export default class Music extends Commend {
     constructor() {
         super({
             name: 'music',
-            cmd: ['play', 'ply'],
-            hear: false,
+            cmd: ['play', 'ply','skip'],
+            hear: [],
+            globalHear: [],
             platform: "discord"
         })
     }
@@ -16,7 +17,18 @@ export default class Music extends Commend {
     async run(msg: w0bMessage): Promise<void> {
         try {
             msg.args.shift()
-            player.play(msg.raw as Message, msg.args.join(' '));
+            switch (msg.hasCommand) {
+                case 'play':
+                case 'ply':
+                    player.play(msg.raw as Message, msg.args.join(' '));
+                    break;
+                case 'skip':
+                    player.skip(msg.raw as Message);
+                    break;
+            
+                default:
+                    break;
+            }
         } catch (e) {
             console.log(e)
         }
