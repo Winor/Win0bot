@@ -1,7 +1,9 @@
 import type { ApplicationCommandData } from 'discord.js';
 import fs from 'fs'
+import Commend from './Commend';
 import { w0bMessage } from './types';
-const listen = new Map();
+//const listen = new Map();
+const commands: Commend[] = []
 export const commandData:ApplicationCommandData[] = []
 
 fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
@@ -14,23 +16,12 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
                 if(cmd.platform !== "telegram") {
                     commandData.push({
                         name: cmd.name,
-                        description: cmd.description ? cmd.description : "Runs a command"
+                        description: cmd.description ? cmd.description : "Runs a command",
+                        options: cmd.discord
                     })  
                 }
                 
-                if((cmd.hear) && (cmd.cmdTriggers)) {
-                    const newArray = cmd.hear.concat(cmd.cmdTriggers)
-                    listen.set(newArray,cmd)
-                    return
-                } 
-                if(cmd.cmdTriggers) {
-                    listen.set(cmd.cmdTriggers, cmd)
-                    return
-                }
-                if(cmd.hear) {
-                    listen.set(cmd.hear, cmd)
-                    return
-                }
+                commands.push(cmd)
             }
         })
     } catch (err) {
@@ -38,14 +29,32 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
     }
       })
 
-function contains(msg: w0bMessage): string {
-    for (const [key, value] of listen) {
-        if (key.includes(msg.magicWord)) {
-            if ((value.platform === msg.platform) || (value.platform === "any"))
-            value.run(msg)
+function contains(type: "hear" | "cmdTriggers" | "name" | "globalHear", msg: w0bMessage): boolean {
+
+        for (const cmd of commands) {
+
+            if(type === 'globalHear') {
+                for (const term of cmd.globalHear) {
+                    if (msg.content.includes(term)){
+                        cmd.run(msg)
+                        return true
+                    }
+                }
+            }
+            
+            if (msg.hasCommand) {
+                if (cmd[type].includes(msg.hasCommand)) {
+                    cmd.run(msg)
+                    return true
+                }            
+            }
+
+            if (cmd[type].includes(msg.args[0])) {
+                cmd.run(msg)
+                return true
+            }  
         }
-    }
-    return 'invalid command'
+    return false
 }
 
 export default contains

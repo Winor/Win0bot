@@ -1,38 +1,30 @@
 import type { ApplicationCommandOptionData } from 'discord.js'
-import config from './config.json'
+import type { w0bMessage } from './types'
 
 export default class Commend {
     name: string
     description?: string
-    private _cmdTriggers: string[] | false
-    hear: string[] | false
+    cmdTriggers: string[]
+    hear: string[]
+    globalHear: string[]
     platform?: "any" | "discord" | "telegram"
     lvl?: number
-    discord?: ApplicationCommandOptionData
+    discord?: ApplicationCommandOptionData[]
+    hidden?: true | false
 
-    constructor (info: {name: string, description?: string ,cmd: string[], hear: string[] | false, platform?: "any" | "discord" | "telegram", lvl?: number, discord?: ApplicationCommandOptionData}) {
+    constructor (info: {name: string, description?: string ,cmd: string[], hear: string[], globalHear: string[], platform?: "any" | "discord" | "telegram", lvl?: number, discord?: ApplicationCommandOptionData[]}) {
         this.name = info.name
         this.description = info.description
-        this._cmdTriggers = false
         this.cmdTriggers = info.cmd
         this.hear = info.hear
+        this.globalHear = info.globalHear
         this.platform = info.platform
         this.lvl = info.lvl
         this.discord = info.discord
     }
 
-    get cmdTriggers(): string[] | false {
-        return this._cmdTriggers
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async run(msg: w0bMessage): Promise<void> {
+        return
     }
-
-    set cmdTriggers(newCMD: string[] | false) { 
-        if (Array.isArray(newCMD)) {
-            this._cmdTriggers = newCMD.map(i => config.prefix + i);
-            return
-        }
-        if (!newCMD) {
-            this._cmdTriggers = false
-            return
-        }
-    }
-}
+  }

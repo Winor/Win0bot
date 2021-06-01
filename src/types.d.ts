@@ -4,10 +4,10 @@ import { Update } from "telegraf/typings/core/types/typegram";
 import { MessageSubType, UpdateType } from "telegraf/typings/telegram-types";
 
 interface w0bMessage {
+    content: string
     hasPrefix: boolean
     args: string[]
     hasCommand: string | false
-    magicWord: string
     raw: Discord.Message | Context<MountMap["text"]> | Interaction
     platform: "discord" | "telegram"
 }

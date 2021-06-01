@@ -34,15 +34,27 @@ client.on('ready', () => {
   client.on('message', msg => {
     const w0bMsg = new Message(msg, msg.content)
     if (!msg.author.bot) {
-      contains(w0bMsg)
+      if (w0bMsg.hasCommand) {
+        contains("cmdTriggers", w0bMsg)
+      } else if (!contains("hear", w0bMsg)){
+        contains("globalHear", w0bMsg)
+      }
     }
   })
 
   // on interaction
   client.on('interaction', interaction => {
     if (!interaction.isCommand()) return;
-    const w0bMsg = new Message(interaction, interaction.commandName)
-    contains(w0bMsg)
+    const inputs:  string[] = []
+    interaction.options.forEach(opt => {
+      if (opt.value) {
+        inputs.push(opt.value.toString())
+      }
+
+    })
+    const w0bMsg = new Message(interaction, `${interaction.commandName} ${inputs.join(' ')}`)
+    if (!interaction.channel) return;
+    contains("name", w0bMsg)
   });
 
   // on voice

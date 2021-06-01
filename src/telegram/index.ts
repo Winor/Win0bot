@@ -4,7 +4,11 @@ import contains from '../listenerMap'
 
 bot.on('text', (ctx) => {
   const w0bMsg = new Message(ctx)
-    contains(w0bMsg)
+  if (w0bMsg.hasCommand) {
+    contains("cmdTriggers", w0bMsg)
+  } else if (!contains("hear", w0bMsg)){
+    contains("globalHear", w0bMsg)
+  }
   })
 
   bot.launch()
