@@ -40,3 +40,6 @@ jobs:
         with:
           name: release
           path: dist/
+
+      - name: Build the Docker image
+        run: docker build . --tag Win0bot:$(date +%s)
