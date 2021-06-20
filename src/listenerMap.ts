@@ -1,7 +1,6 @@
-import type { ApplicationCommandData } from 'discord.js';
 import fs from 'fs'
 import Commend from './Commend';
-import { w0bMessage } from './types';
+import { w0bMessage, ApplicationCommandData } from './types';
 //const listen = new Map();
 const commands: Commend[] = []
 export const commandData:ApplicationCommandData[] = []

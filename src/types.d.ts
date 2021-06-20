@@ -22,3 +22,19 @@ type MountMap = {
         update_id: number
       }
     }
+
+    interface ApplicationCommandOptionData {
+      type: ApplicationCommandOptionType | ApplicationCommandOptionTypes;
+      name: string;
+      description: string;
+      required?: boolean;
+      choices?: ApplicationCommandOptionChoice[];
+      options?: this[];
+    }
+
+    interface ApplicationCommandData {
+      name: string;
+      description: string;
+      options?: ApplicationCommandOptionData[];
+      defaultPermission?: boolean;
+    }
