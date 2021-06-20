@@ -58,10 +58,10 @@ client.on('ready', () => {
   });
 
   // on voice
-  async function overwriteTextChPermission (textCH: string, voiceState: VoiceState, view: boolean) {
+  async function overwriteTextChPermission (textCH: `${bigint}`, voiceState: VoiceState, view: boolean) {
     try {
       if (voiceState.member) {
-      const channel = await voiceState.guild.channels.resolve(textCH)
+      const channel = await voiceState.guild.channels.cache.get(textCH)
       if (!((channel): channel is TextChannel => channel?.type === 'text')(channel)) return;
       await channel.updateOverwrite(voiceState?.member.id, {VIEW_CHANNEL: view})
       if (view) {
@@ -82,7 +82,7 @@ const voiceTextMap = new Map(Object.entries(config.voiceTextChnList))
     }
 
     if ((newState.channelID) && (!oldState.channelID)) {
-      const newChn = voiceTextMap.get(newState.channelID)
+      const newChn = voiceTextMap.get(newState.channelID) as `${bigint}`
       if (newChn) {
         overwriteTextChPermission(newChn, newState, true)
       }
@@ -90,7 +90,7 @@ const voiceTextMap = new Map(Object.entries(config.voiceTextChnList))
     }
 
     if ((!newState.channelID) && (oldState.channelID)) {
-      const oldChn = voiceTextMap.get(oldState.channelID)
+      const oldChn = voiceTextMap.get(oldState.channelID) as `${bigint}`
       if (oldChn) {
         overwriteTextChPermission(oldChn, newState, false)
       }
@@ -98,8 +98,8 @@ const voiceTextMap = new Map(Object.entries(config.voiceTextChnList))
     }
 
     if ((newState.channelID) && (oldState.channelID)) {
-      const oldChn = voiceTextMap.get(oldState.channelID)
-      const newChn = voiceTextMap.get(newState.channelID)
+      const oldChn = voiceTextMap.get(oldState.channelID) as `${bigint}`
+      const newChn = voiceTextMap.get(newState.channelID) as `${bigint}`
       if (oldChn) {
         if (newState.channelID === oldState.channelID) {return}
         overwriteTextChPermission(oldChn, newState, false)
