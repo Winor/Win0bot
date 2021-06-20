@@ -1,5 +1,4 @@
-import type { ApplicationCommandOptionData } from 'discord.js'
-import type { w0bMessage } from './types'
+import type { w0bMessage, ApplicationCommandOptionData} from './types'
 
 export default class Commend {
     name: string
