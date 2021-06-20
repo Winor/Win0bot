@@ -16,11 +16,11 @@ player
 // Send a message when something is added to the queue
 .on('trackAdd', (message: { channel: { send: (arg0: string) => any; }; }, _queue: any, track: { title: any; }) => message.channel.send(`${track.title} has been added to the queue!`))
 // Send messages to format search results
-.on('searchResults', (message: { channel: { send: (arg0: any) => void; }; }, query: any, tracks: any[]) => {
+.on('searchResults', (message: { channel: { send: (arg0: any) => void; }; }, query: any, tracks: any) => {
 
     const embed = new Discord.MessageEmbed()
     .setAuthor(`Here are your search results for ${query}!`)
-    .setDescription(tracks.map((t: { title: any; }, i: any) => `${i + 1}. ${t.title}`))
+    .setDescription(tracks.map((t: { title: any; }, i: any) => `${i + 1}. ${t.title}`).join('\n'))
     .setFooter('Send the number of the song you want to play!')
     message.channel.send(embed);
 
