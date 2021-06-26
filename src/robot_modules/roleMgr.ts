@@ -1,7 +1,7 @@
 import Commend from '../Commend'
 import type w0bMessage from '../discord/adapter'
 
-import config from '../config.json'
+import config from '../config'
 import { Message } from 'discord.js';
 
 function upperCaseString(string: string) {
