@@ -1,4 +1,4 @@
-import * as config from './config.json'
+import config from './config'
 export default class Message {
     content: string
     hasPrefix: boolean

@@ -1,4 +1,4 @@
-import * as config from '../config.json'
+import config from '../config'
 import client from  "./djsClient"
 import Message from './adapter'
 import contains, {commandData} from '../listenerMap'

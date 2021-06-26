@@ -1,4 +1,4 @@
 import { Telegraf } from 'telegraf'
-import * as config from '../config.json'
+import config from '../config'
 const bot = new Telegraf(config.telegramToken)
 export default bot
