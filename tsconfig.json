@@ -12,7 +12,5 @@
     "composite": true,
     "sourceMap": true,
     "keyofStringsOnly": true
-  },
-  "include": ["src/*.json", "src"],
-  "exclude": ["src/robot_modules/old/*"]
+  }
 }
