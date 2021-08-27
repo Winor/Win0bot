@@ -9,7 +9,8 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
     try{
         files.forEach(async file => {
             if(file.endsWith('js')) {
-                const cmdFile = await import(`${__dirname}//robot_modules//${file}`)
+                try {
+                    const cmdFile = await import(`${__dirname}//robot_modules//${file}`)
                 const cmd = new cmdFile.default
 
                 if(cmd.platform !== "telegram") {
@@ -19,8 +20,10 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
                         options: cmd.discord
                     })  
                 }
-                
                 commands.push(cmd)
+                } catch (err) {
+                    console.error(`Module ${file} err: ${err}`)
+                }
             }
         })
     } catch (err) {
