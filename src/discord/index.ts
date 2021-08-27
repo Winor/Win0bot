@@ -2,7 +2,7 @@ import config from '../config'
 import client from  "./djsClient"
 import Message from './adapter'
 import contains, {commandData} from '../listenerMap'
-import type { TextChannel, VoiceState, Activity } from 'discord.js'
+import type { VoiceState, Activity, GuildChannel } from 'discord.js'
 
 client.login(config.discordToken)
 
@@ -12,27 +12,31 @@ client.on('ready', () => {
         console.log(`Logged in as ${client.user.tag}!`);
         //client.user.setAvatar('./logo.png')
 
-        // delete old cmds
-        client.guilds.cache.get('196376973084327936')?.commands.fetch().then(
-          (cmd) => {
-            cmd.forEach(elm => {
-              client.guilds.cache.get('196376973084327936')?.commands.delete(elm)
-            });
-          }
-        )
-
-        // add new cmds
-        commandData.forEach(command => {
-          // client.application?.commands.create(command);
-          client.guilds.cache.get('196376973084327936')?.commands.create(command);
+        // // delete old cmds
+        // client.guilds.cache.get('196376973084327936')?.commands.fetch().then(
+        //   (cmd) => {
+        //     cmd.forEach(elm => {
+        //       client.guilds.cache.get('196376973084327936')?.commands.delete(elm)
+        //     });
+        //   }
+        // ).finally(
+        //   () => {
+        //     // add new cmds
+        // commandData.forEach(command => {
+        //   // client.application?.commands.create(command);
+        //   client.guilds.cache.get('196376973084327936')?.commands.create(command);
           
-        });
+        // });
+        //   }
+        // )
+
+        
     }
 })
 
 // on msg
-  client.on('message', msg => {
-    const w0bMsg = new Message(msg, msg.content)
+  client.on('messageCreate', msg => {
+    const w0bMsg = new Message(msg)
     if (!msg.author.bot) {
       if (w0bMsg.hasCommand) {
         contains("cmdTriggers", w0bMsg)
@@ -43,16 +47,16 @@ client.on('ready', () => {
   })
 
   // on interaction
-  client.on('interaction', interaction => {
+  client.on('interactionCreate', interaction => {
     if (!interaction.isCommand()) return;
-    const inputs:  string[] = []
-    interaction.options.forEach(opt => {
-      if (opt.value) {
-        inputs.push(opt.value.toString())
-      }
+    // const inputs:  string[] = []
+    // interaction.options.forEach(opt => {
+    //   if (opt.value) {
+    //     inputs.push(opt.value.toString())
+    //   }
 
-    })
-    const w0bMsg = new Message(interaction, `${interaction.commandName} ${inputs.join(' ')}`)
+    // })
+    const w0bMsg = new Message(interaction)
     if (!interaction.channel) return;
     contains("name", w0bMsg)
   });
@@ -62,10 +66,12 @@ client.on('ready', () => {
     try {
       if (voiceState.member) {
       const channel = await voiceState.guild.channels.cache.get(textCH)
-      if (!((channel): channel is TextChannel => channel?.type === 'text')(channel)) return;
-      await channel.updateOverwrite(voiceState?.member.id, {VIEW_CHANNEL: view})
+      if (!((channel): channel is GuildChannel  => channel?.type === 'GUILD_TEXT')(channel)) return;
+      await channel.permissionOverwrites.edit(voiceState?.member.id, {VIEW_CHANNEL: view})
       if (view) {
+        if (channel.isText()){
         await channel.send(`${voiceState.member} ${config.voiceChannleJoinMsg}`)
+        }
       }
     }
   } catch(err) {
@@ -81,31 +87,31 @@ const voiceTextMap = new Map(Object.entries(config.voiceTextChnList))
       return
     }
 
-    if ((newState.channelID) && (!oldState.channelID)) {
-      const newChn = voiceTextMap.get(newState.channelID) as `${bigint}`
+    if ((newState.channelId) && (!oldState.channelId)) {
+      const newChn = voiceTextMap.get(newState.channelId) as `${bigint}`
       if (newChn) {
         overwriteTextChPermission(newChn, newState, true)
       }
       return
     }
 
-    if ((!newState.channelID) && (oldState.channelID)) {
-      const oldChn = voiceTextMap.get(oldState.channelID) as `${bigint}`
+    if ((!newState.channelId) && (oldState.channelId)) {
+      const oldChn = voiceTextMap.get(oldState.channelId) as `${bigint}`
       if (oldChn) {
         overwriteTextChPermission(oldChn, newState, false)
       }
       return
     }
 
-    if ((newState.channelID) && (oldState.channelID)) {
-      const oldChn = voiceTextMap.get(oldState.channelID) as `${bigint}`
-      const newChn = voiceTextMap.get(newState.channelID) as `${bigint}`
+    if ((newState.channelId) && (oldState.channelId)) {
+      const oldChn = voiceTextMap.get(oldState.channelId) as `${bigint}`
+      const newChn = voiceTextMap.get(newState.channelId) as `${bigint}`
       if (oldChn) {
-        if (newState.channelID === oldState.channelID) {return}
+        if (newState.channelId === oldState.channelId) {return}
         overwriteTextChPermission(oldChn, newState, false)
       }
       if (newChn) {
-        if (newState.channelID === oldState.channelID) {return}
+        if (newState.channelId === oldState.channelId) {return}
         overwriteTextChPermission(newChn, newState, true)
       }
       return
