@@ -1,12 +1,12 @@
 import Commend from '../Commend'
 import type w0bMessage from '../discord/adapter'
 
-export default class Echo extends Commend {
+export default class Decide extends Commend {
 constructor() {
     super({
-        name: 'echo',
-        cmd: ['echo', 'ec'],
-        hear: [],
+        name: 'decide',
+        cmd: ['decide', 'd'],
+        hear: ['תחליט','decide'],
         globalHear: [],
         platform: "any",
         lvl: 0,
@@ -22,9 +22,16 @@ constructor() {
 }
 
 async run(msg: w0bMessage): Promise<void> {
-    try {
-        msg.args.shift()
-        await msg.back(msg.args.join(' '))
+    try {  
+        const text = msg.args
+        text.shift()
+        const newmsg = text.join(' ')
+        const items = newmsg.split(' או ')
+        if (items) {
+            const num = Math.floor(Math.random() * items.length)
+            await msg.back(items[num])
+        }
+        
     } catch (e) {
         console.log(e)
     }   

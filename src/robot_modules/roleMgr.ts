@@ -17,12 +17,14 @@ export default class Echo extends Commend {
             hear: [],
             globalHear: [],
             platform: "discord",
-            discord: [{
-                name: 'input',
-                type: 'STRING',
-                description: 'give/remove role name',
-                required: true,
-              }]
+            discord: {
+                options: [{
+                    name: 'input',
+                    type: 'STRING',
+                    description: 'give/remove role name',
+                    required: true,
+                  }]
+            }
         })
     }
 

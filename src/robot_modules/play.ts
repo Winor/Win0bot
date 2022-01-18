@@ -25,12 +25,14 @@ export default class Play extends Commend {
             hear: [],
             globalHear: [],
             platform: "discord",
-            discord: [{
+            discord: {
+                options: [{
                 name: 'song',
                 type: 'STRING' as const,
                 description: 'The URL of the song to play',
                 required: true,
             }]
+        }
         })
     }
 

@@ -12,7 +12,7 @@ export default class Rami extends Commend {
             platform: "any"
         })
         this.rami = [
-            "דק",
+            "x דק",
             "אפשר גם עכשיו",
             "הפילו עכשיו אפשר",
             "נשמע טוב",
@@ -30,15 +30,30 @@ export default class Rami extends Commend {
             "מוצי מקבל ובא",
             "רגע אני מסיים לאכול דגגגג",
             "תכף",
-            "רגע מכין תא"
+            "רגע מכין תא",
+            "בא",
+            "סבבה",
+            "בעוד x שעות בערך",
+            "לאן?",
+            "אני מוכן",
+            "אני מוכן מי שרוצה",
+            "מה קרה?",
+            "מה",
+            "יאללה",
+            "היום?",
+            "x שניות",
+            "בעוד x ימים",
+            "אני בא רגע",
+            "תספרו x שניות"
         ]
     }
 
     async run(msg: w0bMessage): Promise<void> {
         try {
             const rand = Math.floor(Math.random() * this.rami.length)
-            if(rand === 0) {
-                await msg.back(`רמי: ${ Math.floor(Math.random() * 60)} דק`)
+            if(this.rami[rand].includes('x')) {
+                const xtime = this.rami[rand].replace('x', `${ Math.floor(Math.random() * 60)}`)
+                await msg.back(`רמי: ${xtime}`)
                 return
             }
             await msg.back(`רמי: ${this.rami[rand]}`)
