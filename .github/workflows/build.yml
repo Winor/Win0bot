@@ -61,6 +61,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
 
       - name: Build and push
         id: docker_build
@@ -68,4 +72,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: winor/win0bot:latest,winor/${{ github.ref_name }}
+          tags: winor/win0bot:latest,winor/${{ steps.package-version.outputs.current-version }}
