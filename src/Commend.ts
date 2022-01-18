@@ -1,4 +1,10 @@
-import type { w0bMessage, ApplicationCommandOptionData} from './types'
+import type { ApplicationCommandOptionData, ApplicationCommandType } from 'discord.js'
+import type { w0bMessage} from './types'
+
+type DiscordSpecific = {
+    options?: ApplicationCommandOptionData[],
+    type?: ApplicationCommandType
+}
 
 export default class Commend {
     name: string
@@ -8,10 +14,10 @@ export default class Commend {
     globalHear: string[]
     platform?: "any" | "discord" | "telegram"
     lvl?: number
-    discord?: ApplicationCommandOptionData[]
+    discord?: DiscordSpecific
     hidden?: true | false
 
-    constructor (info: {name: string, description?: string ,cmd: string[], hear: string[], globalHear: string[], platform?: "any" | "discord" | "telegram", lvl?: number, discord?: ApplicationCommandOptionData[]}) {
+    constructor (info: {name: string, description?: string ,cmd: string[], hear: string[], globalHear: string[], platform?: "any" | "discord" | "telegram", lvl?: number, discord?: DiscordSpecific}) {
         this.name = info.name
         this.description = info.description
         this.cmdTriggers = info.cmd

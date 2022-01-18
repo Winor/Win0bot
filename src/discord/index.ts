@@ -1,9 +1,9 @@
 import config from '../config'
 import client from  "./djsClient"
 import Message from './adapter'
-import contains, {commandData} from '../listenerMap'
-import type { VoiceState, Activity, GuildChannel } from 'discord.js'
-
+import * as db from '../db'
+import contains from '../listenerMap'
+import type { VoiceState, Activity, GuildMember, PartialGuildMember } from 'discord.js'
 client.login(config.discordToken)
 
 // on rdy
@@ -29,10 +29,52 @@ client.on('ready', () => {
         // });
         //   }
         // )
-
+        client.guilds.cache.get('196376973084327936')?.members.fetch().then(
+          (members) => {
+            members.forEach(createUser)
+          }
+        )
         
     }
 })
+
+// db stuff
+async function isUser(id: string): Promise<boolean> {
+  return await db.findUser({discordId: id}) ? true : false
+}
+
+async function createUser(user: GuildMember) {
+  try {
+    if (!await isUser(user.id)) {
+      await db.createUser({
+        discordId: user.id,
+        name: user.displayName
+    })
+  }
+  } catch(error) {
+    console.log(error)
+  }
+  
+}
+
+async function deleteUser(user: GuildMember | PartialGuildMember) {
+  try {
+    if (await isUser(user.id)) {
+      await db.deleteUser({discordId: user.id})
+  }
+  } catch(error) {
+    console.log(error)
+  }
+  
+}
+
+client.on('guildMemberAdd', user => {
+createUser(user)
+})
+
+client.on('guildMemberRemove', user => {
+  deleteUser(user)
+  })
 
 // on msg
   client.on('messageCreate', msg => {
@@ -48,7 +90,11 @@ client.on('ready', () => {
 
   // on interaction
   client.on('interactionCreate', interaction => {
-    if (!interaction.isCommand()) return;
+    if ((interaction.isCommand()) || (interaction.isContextMenu())) {
+      const w0bMsg = new Message(interaction)
+      if (!interaction.channel) return;
+      contains("name", w0bMsg)
+    }
     // const inputs:  string[] = []
     // interaction.options.forEach(opt => {
     //   if (opt.value) {
@@ -56,9 +102,6 @@ client.on('ready', () => {
     //   }
 
     // })
-    const w0bMsg = new Message(interaction)
-    if (!interaction.channel) return;
-    contains("name", w0bMsg)
   });
 
   // on voice
@@ -66,7 +109,7 @@ client.on('ready', () => {
     try {
       if (voiceState.member) {
       const channel = await voiceState.guild.channels.cache.get(textCH)
-      if (!((channel): channel is GuildChannel  => channel?.type === 'GUILD_TEXT')(channel)) return;
+      if (channel?.type !== 'GUILD_TEXT') return;
       await channel.permissionOverwrites.edit(voiceState?.member.id, {VIEW_CHANNEL: view})
       if (view) {
         if (channel.isText()){
@@ -81,41 +124,90 @@ client.on('ready', () => {
 
 const voiceTextMap = new Map(Object.entries(config.voiceTextChnList))
 
+async function getNotifyList(): Promise<Map<string, string[]> | undefined> {
+  const notifyList = await db.getAllStore('notify')
+  const notifyMap: Map<string, string[]> = new Map()
+
+  if (!notifyList) return
+
+  notifyList.forEach((member) => {
+    (member.data as string[]).forEach((user) => {
+      if (!notifyMap.has(user)) {
+        if (member.user.discordId) {
+        notifyMap.set(user, [member.user.discordId])
+      }
+      } else {
+        const list = notifyMap.get(user)
+        if ((member.user.discordId) && (list)) {
+        list?.push(member.user.discordId)
+        notifyMap.set(user, list)
+        }
+      }
+    })
+  })
+  return notifyMap
+}
+
+async function notify (oldState: VoiceState, newState: VoiceState) {
+  if ((newState.channelId) && (!oldState.channelId)) {
+  const notifyList = await getNotifyList()
+    if (notifyList) {
+    for (const [key, value] of notifyList) {
+      if (key === newState.member?.id) {
+        value.forEach(async (user) => {
+          const clientUser = await client.users.fetch(user)
+          if((newState.channel?.permissionsFor(clientUser)?.has("VIEW_CHANNEL") && (!newState.channel?.members.has(clientUser.id)))) {
+          clientUser.send(`Your friend <@${key}> just joined ${newState.channel} over at ${newState.guild}\n ${'```'} To stop notifications for this user right click on his name over at ${newState.guild} server and select apps>notify again${'```'}`)
+        }
+        })
+      }
+  }
+}
+}
+}
+
+function privateRooms (oldState: VoiceState, newState: VoiceState) {
+  if ((newState.member?.user.bot) || (oldState.member?.user.bot)) {
+    return
+  }
+
+  if ((newState.channelId) && (!oldState.channelId)) {
+    const newChn = voiceTextMap.get(newState.channelId) as `${bigint}`
+    if (newChn) {
+      overwriteTextChPermission(newChn, newState, true)
+    }
+    return
+  }
+
+  if ((!newState.channelId) && (oldState.channelId)) {
+    const oldChn = voiceTextMap.get(oldState.channelId) as `${bigint}`
+    if (oldChn) {
+      overwriteTextChPermission(oldChn, newState, false)
+    }
+    return
+  }
+
+  if ((newState.channelId) && (oldState.channelId)) {
+    const oldChn = voiceTextMap.get(oldState.channelId) as `${bigint}`
+    const newChn = voiceTextMap.get(newState.channelId) as `${bigint}`
+    if (oldChn) {
+      if (newState.channelId === oldState.channelId) {return}
+      overwriteTextChPermission(oldChn, newState, false)
+    }
+    if (newChn) {
+      if (newState.channelId === oldState.channelId) {return}
+      overwriteTextChPermission(newChn, newState, true)
+    }
+    return
+  }
+}
+
   client.on('voiceStateUpdate', (oldState, newState) => {
-
-    if ((newState.member?.user.bot) || (oldState.member?.user.bot)) {
-      return
-    }
-
-    if ((newState.channelId) && (!oldState.channelId)) {
-      const newChn = voiceTextMap.get(newState.channelId) as `${bigint}`
-      if (newChn) {
-        overwriteTextChPermission(newChn, newState, true)
-      }
-      return
-    }
-
-    if ((!newState.channelId) && (oldState.channelId)) {
-      const oldChn = voiceTextMap.get(oldState.channelId) as `${bigint}`
-      if (oldChn) {
-        overwriteTextChPermission(oldChn, newState, false)
-      }
-      return
-    }
-
-    if ((newState.channelId) && (oldState.channelId)) {
-      const oldChn = voiceTextMap.get(oldState.channelId) as `${bigint}`
-      const newChn = voiceTextMap.get(newState.channelId) as `${bigint}`
-      if (oldChn) {
-        if (newState.channelId === oldState.channelId) {return}
-        overwriteTextChPermission(oldChn, newState, false)
-      }
-      if (newChn) {
-        if (newState.channelId === oldState.channelId) {return}
-        overwriteTextChPermission(newChn, newState, true)
-      }
-      return
-    }
+    // private rooms
+    privateRooms(oldState, newState)
+    
+    // notify
+    notify(oldState, newState)
   })
 
 // presence

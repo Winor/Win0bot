@@ -1,6 +1,7 @@
+import type { ApplicationCommandData } from 'discord.js';
 import fs from 'fs'
 import Commend from './Commend';
-import { w0bMessage, ApplicationCommandData } from './types';
+import { w0bMessage } from './types';
 //const listen = new Map();
 const commands: Commend[] = []
 export const commandData:ApplicationCommandData[] = []
@@ -16,8 +17,9 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
                 if(cmd.platform !== "telegram") {
                     commandData.push({
                         name: cmd.name,
-                        description: cmd.description ? cmd.description : "Runs a command",
-                        options: cmd.discord
+                        ...(!["MESSAGE", "USER"].includes(cmd.discord?.type)) && {description: cmd.description ? cmd.description : "Runs a command"},
+                        ...(cmd.discord?.options) && {options: cmd.discord?.options},
+                        ...(cmd.discord?.type) && {type: cmd.discord?.type}
                     })  
                 }
                 commands.push(cmd)
@@ -54,7 +56,12 @@ function contains(type: "hear" | "cmdTriggers" | "name" | "globalHear", msg: w0b
             if (cmd[type].includes(msg.args[0])) {
                 cmd.run(msg)
                 return true
-            }  
+            }
+            
+            if (cmd[type].includes(msg.raw.commandName)) {
+                cmd.run(msg)
+                return true
+            }
         }
     return false
 }

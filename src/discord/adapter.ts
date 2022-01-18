@@ -58,8 +58,9 @@ class Adapter implements w0bMessage {
         if (this.isMsg(this.raw)) {
             return await this.raw.channel.send(msg);
         }
-        if (!this.raw.isCommand()) return;
+        if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
         return await this.raw.reply(msg)
+        }
     }
 
     async edit(oldMsg: Message, newMsg: string): Promise<Message> {
@@ -68,15 +69,25 @@ class Adapter implements w0bMessage {
 
     async defer(): Promise<unknown> {
         if (!this.isMsg(this.raw)) {
-            if (!this.raw.isCommand()) return;
+            if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
             return await this.raw.deferReply();
+        }
+        }
+    }
+
+    async getTarget(): Promise<string | undefined> {
+        if (!this.isMsg(this.raw)) {
+            if (!this.raw.isContextMenu()) return;
+            return await this.raw.targetId
         }
     }
 
     async followUp (msg: string | MessagePayload | InteractionReplyOptions): Promise<unknown> {
         if (!this.isMsg(this.raw)) {
-            if (!this.raw.isCommand()) return;
+            if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
             return this.raw.followUp(msg);
+            }
+            return
         }
         return this.raw.channel.send(msg)
     }
