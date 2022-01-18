@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Config {
+  id                  Int    @id @default(autoincrement())
+  discordToken        String
+  telegramToken       String
+  admins              Json
+  mods                String
+  prefix              String
+  voiceTextChnList    Json
+  voiceChannleJoinMsg String
+  effectiveRoles      Json
+}
+
+model User {
+  id         Int              @id @default(autoincrement())
+  name       String?
+  discordId  String?          @unique
+  telegramId String?          @unique
+  store      Store[]
+  role       Role             @default(USER)
+
+}
+
+model Mode {
+  id   Int      @id @default(autoincrement())
+  name String
+  bln  Boolean?
+  val  String?
+}
+
+model Guild {
+  id       Int       @id
+  name     String?
+  channles Channle[]
+}
+
+model Channle {
+  id      Int     @id
+  name    String?
+  guildId Int?
+  guild   Guild?  @relation(fields: [guildId], references: [id])
+}
+
+model Store {
+  id   Int    @id @default(autoincrement())
+  botUserId Int
+  user User   @relation(fields: [botUserId], references: [id])
+  name String
+  data Json?
+}
+
+enum Role {
+  ADMIN
+  USER
+  GHOST
+  MOD
+}
