@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
-dotenv.config()
-
+import dotenvExpand from 'dotenv-expand'
+dotenvExpand.expand(dotenv.config())
 interface GetEnvFlags {
   entry: string
   parse?: boolean
