@@ -1,6 +1,6 @@
 {
   "name": "win0bot-one",
-  "version": "2.43.0",
+  "version": "2.43.1",
   "description": "a Winor bot",
   "main": "index.js",
   "scripts": {
