@@ -62,13 +62,12 @@ export default class Play extends Commend {
                     if (discordInput?.componentType === "SELECT_MENU") {
                     url = (discordInput as SelectMenuInteraction).values[0]
                     await discordInput.update({ content:'Ok.', components: [] })
-                    } else {
-                        url = input
                     }
-
                 }
-
-                }
+            }
+            else {
+                url = input
+            }
                 // If a connection to the guild doesn't already exist and the user is in a voice channel, join that channel
                 // and create a subscription.
                 if ((!subscription) || (subscription?.queueLock)) {
