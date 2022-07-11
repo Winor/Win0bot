@@ -49,7 +49,7 @@ export default class Play extends Commend {
                     const filter = await ytsr.getFilters(input);
                     const videos = filter.get('Type')?.get('Video')
                     if(videos && videos.url) {
-                    const searchResults = await ytsr(videos.url, {limit: 10});
+                    const searchResults = await ytsr(videos.url, {limit: 8});
                     const row = new MessageActionRow()
                         .addComponents(
                             new MessageSelectMenu()
