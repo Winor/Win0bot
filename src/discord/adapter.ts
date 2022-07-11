@@ -1,4 +1,4 @@
-import { Interaction, InteractionReplyOptions, Message, MessageActionRow, MessageButton, MessageButtonStyleResolvable, MessageComponentInteraction, MessagePayload, MessageSelectMenu } from "discord.js";
+import { Interaction, InteractionReplyOptions, Message, MessageActionRow, MessageButton, MessageButtonStyleResolvable, MessageComponentInteraction, MessageOptions, MessagePayload, MessageSelectMenu } from "discord.js";
 import config from '../config'
 import { w0bMessage } from '../types';
 
@@ -54,12 +54,12 @@ class Adapter implements w0bMessage {
         return this.raw.guildId
     }
 
-    async back(msg: string | InteractionReplyOptions | MessagePayload): Promise<Message | void> {
+    async back(msg: string | InteractionReplyOptions | MessagePayload | MessageOptions): Promise<Message | void> {
         if (this.isMsg(this.raw)) {
-            return await this.raw.channel.send(msg);
+            return await this.raw.channel.send(msg as string | MessagePayload | MessageOptions);
         }
         if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
-        return await this.raw.reply(msg)
+        return await this.raw.reply(msg as InteractionReplyOptions)
         }
     }
 
@@ -89,7 +89,7 @@ class Adapter implements w0bMessage {
             }
             return
         }
-        return this.raw.channel.send(msg)
+        return this.raw.channel.send(msg as string | MessagePayload | MessageOptions)
     }
 
     // async followUp(msg: string | MessagePayload | InteractionReplyOptions): Promise<unknown> {
