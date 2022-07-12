@@ -42,7 +42,7 @@ export default class Play extends Commend {
                 let subscription = subscriptions.get(msg.guildId);
                 await msg.defer()
                 // Extract the video URL from the command
-                const input = msg.args.slice(1).join(' ')
+                const input = msg.text
                 let url = ''
                 //cheak if URL or serch
                 if (!input.includes('https://')) {

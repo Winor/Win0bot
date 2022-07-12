@@ -6,7 +6,9 @@ import { MessageSubType, UpdateType } from "telegraf/typings/telegram-types";
 interface w0bMessage {
     content: string
     hasPrefix: boolean
+    msgArray: string[]
     args: string[]
+    text: string
     hasCommand: string | false
     raw: Discord.Message | Context<MountMap["text"]> | Interaction
     platform: "discord" | "telegram"

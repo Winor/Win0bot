@@ -53,7 +53,7 @@ function contains(type: "hear" | "cmdTriggers" | "name" | "globalHear", msg: w0b
                 }            
             }
 
-            if (cmd[type].includes(msg.args[0])) {
+            if (cmd[type].includes(msg.msgArray[0])) {
                 cmd.run(msg)
                 return true
             }

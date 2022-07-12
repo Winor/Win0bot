@@ -30,10 +30,10 @@ export default class Echo extends Commend {
 
     async run(msg: w0bMessage): Promise<void> {
         const dmsg = msg.raw as Message
-        if (msg.args[1]) {
-            const action = upperCaseString(msg.args[1])
+        if (msg.args[0]) {
+            const action = upperCaseString(msg.args[0])
             const isAction = (action === 'Give') || (action === 'Remove')
-            const roleName = msg.args[2] ? upperCaseString(msg.args[2]) : false
+            const roleName = msg.args[0] ? upperCaseString(msg.args[0]) : false
             if (isAction && roleName) {
                 const guildRole = dmsg.guild?.roles.cache.find((r => r.name === roleName))
                 if (guildRole) {

@@ -1,48 +1,36 @@
+import { Interaction, InteractionReplyOptions, Message, MessageActionRow, MessageAttachment, MessageButton, MessageButtonStyleResolvable, MessageComponentInteraction, MessageOptions, MessagePayload, MessageSelectMenu } from "discord.js";
 import w0bMessage from "../../Message"
 
-class Adapter implements w0bMessage {
-    raw: Message | Interaction
-    btnCount: number
-    platform: "discord"
-
-    constructor(raw: Message | Interaction) {
-        this.platform = "discord"
-        this.raw = raw
-        this.btnCount = -1
-    }
-
-    isMsg(src: Message | Interaction): src is Message {
+    function isMsg(src: Message | Interaction): src is Message {
         return (src as Message).content !== undefined;
     }
 
-    get content(): string {
-        if (this.isMsg(this.raw)) {
-            return this.raw.content
+    function content(raw: Message | Interaction): string {
+        if (isMsg(raw)) {
+            return raw.content
         }
-        if (!this.raw.isCommand()) return '';
+        if (!raw.isCommand()) return '';
         const inputs: string[] = []
         //?
-        this.raw.options.data.forEach(opt => {
+        raw.options.data.forEach(opt => {
             if (opt.value) {
                 inputs.push(opt.value.toString())
             }
 
         })
-        return `${this.raw.commandName} ${inputs.join(' ')}`
+        return `${raw.commandName} ${inputs.join(' ')}`
     }
 
-    get hasPrefix(): boolean {
-        if (!this.content) { return false }
-        return this.content.charAt(0) === config.prefix
-    }
+class Adapter extends w0bMessage {
+    raw: Message | Interaction
+    btnCount: number
+    isMsg: typeof isMsg
 
-    get args(): string[] {
-        if (!this.content) { return [] }
-        return this.content.split(' ')
-    }
-
-    get hasCommand(): string | false {
-        return (this.hasPrefix) ? this.args[0].replace(config.prefix, '') : false
+    constructor(raw: Message | Interaction) {
+        super(content(raw), 'discord')
+        this.raw = raw
+        this.btnCount = -1
+        this.isMsg = isMsg
     }
 
     get guildId(): string | null | undefined {
@@ -58,6 +46,16 @@ class Adapter implements w0bMessage {
         }
         if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
         return await this.raw.reply(msg as InteractionReplyOptions)
+        }
+    }
+
+    async backPhoto(photo: string | Buffer, text?: string): Promise<Message | void> {
+        const file = new MessageAttachment(photo);
+        if (this.isMsg(this.raw)) {
+            return await this.raw.channel.send({files: [file], content: text });
+        }
+        if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
+        return await this.raw.reply({files: [file], content: text})
         }
     }
 

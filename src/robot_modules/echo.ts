@@ -23,8 +23,7 @@ constructor() {
 
 async run(msg: w0bMessage): Promise<void> {
     try {
-        msg.args.shift()
-        await msg.back(msg.args.join(' '))
+        await msg.back(msg.text)
     } catch (e) {
         console.log(e)
     }   

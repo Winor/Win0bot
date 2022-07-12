@@ -17,7 +17,20 @@ export default class extends w0bMessage {
         return await this.raw.reply(msg)
     }
 
+    async backPhoto (photo: string | Buffer, text?: string): Promise<Message.TextMessage> {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return await this.raw.replyWithPhoto({source: photo}, { caption: text })
+    }
+
     async edit (oldMsg: Message.TextMessage, newMsg: string): Promise<true | (Message.TextMessage)> {
         return await this.raw.telegram.editMessageText(oldMsg.chat.id, oldMsg.message_id, undefined, newMsg)
     }
+
+    async defer(): Promise<unknown> {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return await this.raw.reply('Thinking.... this might take a while.')
+    }
+
 }

@@ -23,10 +23,7 @@ constructor() {
 
 async run(msg: w0bMessage): Promise<void> {
     try {  
-        const text = msg.args
-        text.shift()
-        const newmsg = text.join(' ')
-        const items = newmsg.split(' או ')
+        const items = msg.text.split(' או ')
         if (items) {
             const num = Math.floor(Math.random() * items.length)
             await msg.back(items[num])
