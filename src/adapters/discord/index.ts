@@ -1,8 +1,8 @@
-import config from '../config'
+import config from '../../config'
 import client from  "./djsClient"
 import Message from './adapter'
-import * as db from '../db'
-import contains from '../listenerMap'
+import * as db from '../../db'
+import contains from '../../listenerMap'
 import type { VoiceState, Activity, GuildMember, PartialGuildMember } from 'discord.js'
 client.login(config.discordToken)
 

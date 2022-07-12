@@ -1,6 +1,6 @@
 import Commend from '../Commend'
 import * as db from '../db'
-import type w0bMessage from '../discord/adapter'
+import type w0bMessage from '../adapters/discord/adapter'
 
 export default class Notify extends Commend {
 constructor() {

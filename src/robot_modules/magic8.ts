@@ -1,5 +1,5 @@
 import Commend from '../Commend'
-import type w0bMessage from '../discord/adapter'
+import type w0bMessage from '../adapters/discord/adapter'
 
 export default class Magic8 extends Commend {
     private magic8Eng: string[];

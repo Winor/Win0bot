@@ -1,6 +1,6 @@
 import bot from  "./tgfClient"
 import Message from './adapter'
-import contains from '../listenerMap'
+import contains from '../../listenerMap'
 
 bot.on('text', (ctx) => {
   const w0bMsg = new Message(ctx)

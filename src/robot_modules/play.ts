@@ -9,11 +9,11 @@ import {
     VoiceConnectionStatus,
 } from '@discordjs/voice';
 import Commend from '../Commend'
-import type w0bMessage from '../discord/adapter'
+import type w0bMessage from '../adapters/discord/adapter'
 //
-import { Track } from '../discord/music/track';
-import { MusicSubscription } from '../discord/music/subscription';
-import subscriptions from '../discord/music/'
+import { Track } from '../adapters/discord/music/track';
+import { MusicSubscription } from '../adapters/discord/music/subscription';
+import subscriptions from '../adapters/discord/music'
 import ytsr, { Video } from 'ytsr'
 
 

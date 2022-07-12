@@ -1,7 +1,7 @@
 import type { Context } from "telegraf";
 import { Message } from "telegraf/typings/core/types/typegram";
 import { MountMap } from "telegraf/typings/telegram-types";
-import w0bMessage from "../Message"
+import w0bMessage from "../../Message"
 
 export default class extends w0bMessage {
     raw: Context<MountMap["text"]>

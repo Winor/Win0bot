@@ -1,6 +1,4 @@
-import { Interaction, InteractionReplyOptions, Message, MessageActionRow, MessageButton, MessageButtonStyleResolvable, MessageComponentInteraction, MessageOptions, MessagePayload, MessageSelectMenu } from "discord.js";
-import config from '../config'
-import { w0bMessage } from '../types';
+import w0bMessage from "../../Message"
 
 class Adapter implements w0bMessage {
     raw: Message | Interaction

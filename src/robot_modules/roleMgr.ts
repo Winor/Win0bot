@@ -1,5 +1,5 @@
 import Commend from '../Commend'
-import type w0bMessage from '../discord/adapter'
+import type w0bMessage from '../adapters/discord/adapter'
 
 import config from '../config'
 import { Message } from 'discord.js';

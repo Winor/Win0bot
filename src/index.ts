@@ -1,2 +1,2 @@
-import './discord'
-import './telegram'
+import './adapters/discord'
+import './adapters/telegram'

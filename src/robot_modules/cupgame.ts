@@ -1,6 +1,6 @@
 import { Interaction, Message, MessageButton } from 'discord.js';
 import Commend from '../Commend'
-import type w0bMessage from '../discord/adapter'
+import type w0bMessage from '../adapters/discord/adapter'
 
 export default class FindTheBall extends Commend {
 constructor() {
