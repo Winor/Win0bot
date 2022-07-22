@@ -16,7 +16,7 @@ constructor() {
 
 async run(msg: w0bMessage): Promise<void> {
     try {
-        msg.defer()
+        await msg.defer()
         const ball = Math.floor(Math.random() * 3)
         
         const btns: MessageButton[] = []
