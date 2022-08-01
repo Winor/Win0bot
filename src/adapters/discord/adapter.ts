@@ -49,13 +49,13 @@ class Adapter extends w0bMessage {
         }
     }
 
-    async backPhoto(photo: string | Buffer, text?: string): Promise<Message | void> {
+    async backPhoto(photo: string | Buffer, text?: string): Promise<unknown> {
         const file = new MessageAttachment(photo);
         if (this.isMsg(this.raw)) {
             return await this.raw.channel.send({files: [file], content: text });
         }
         if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
-        return await this.raw.reply({files: [file], content: text})
+        return await this.raw.followUp({files: [file], content: text})
         }
     }
 
