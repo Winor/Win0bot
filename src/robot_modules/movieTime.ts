@@ -25,7 +25,7 @@ export default class Movie extends Commend {
     
     async run(msg: w0bMessage): Promise<void> {
         try {
-            msg.defer()
+            await msg.defer()
             const browser = await puppeteer.launch();
             const page = await browser.newPage();
             await page.goto(`https://www.yesplanet.co.il/search?query=${msg.text}`);
@@ -35,7 +35,7 @@ export default class Movie extends Commend {
                 deviceScaleFactor: 1,
               })
             await page.setCookie({name: 'selectedSessionCinemaCode', value: '1070'})
-            const firstRes = await page.$('div.media:nth-child(1)')
+            const firstRes = await page.$('div.media:nth-child(1) > div:nth-child(2) > h2:nth-child(1)')
             const movieNameRes = await page.$eval('div.media:nth-child(1) > div:nth-child(2) > h2:nth-child(1)',(element) => {
                 return element.innerHTML 
             })
