@@ -13,7 +13,7 @@ constructor() {
         discord: {
             options: [{
             name: 'input',
-            type: 'STRING',
+            type: 3,
             description: 'The input which should be echoed back',
             required: true,
           }]

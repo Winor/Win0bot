@@ -32,7 +32,7 @@ export class MusicSubscription {
 		this.audioPlayer = createAudioPlayer();
 		this.queue = [];
 
-		this.voiceConnection.on<"stateChange">('stateChange', async (_, newState) => {
+		this.voiceConnection.on('stateChange', async (_, newState) => {
 			if (newState.status === VoiceConnectionStatus.Disconnected) {
 				if (newState.reason === VoiceConnectionDisconnectReason.WebSocketClose && newState.closeCode === 4014) {
 					/*
@@ -87,7 +87,7 @@ export class MusicSubscription {
 		});
 
 		// Configure audio player
-		this.audioPlayer.on<"stateChange">('stateChange', (oldState, newState) => {
+		this.audioPlayer.on('stateChange', (oldState, newState) => {
 			if (newState.status === AudioPlayerStatus.Idle && oldState.status !== AudioPlayerStatus.Idle) {
 				// If the Idle state is entered from a non-Idle state, it means that an audio resource has finished playing.
 				// The queue is then processed to start playing the next track, if one is available.

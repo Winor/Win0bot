@@ -1,4 +1,4 @@
-import { Interaction, InteractionReplyOptions, Message, MessageActionRow, MessageAttachment, MessageButton, MessageButtonStyleResolvable, MessageComponentInteraction, MessageOptions, MessagePayload, MessageSelectMenu } from "discord.js";
+import { Interaction, InteractionReplyOptions, Message, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageComponentInteraction, MessageOptions, MessagePayload, ButtonStyle, InteractionResponse } from "discord.js";
 import w0bMessage from "../../Message"
 
     function isMsg(src: Message | Interaction): src is Message {
@@ -40,21 +40,21 @@ class Adapter extends w0bMessage {
         return this.raw.guildId
     }
 
-    async back(msg: string | InteractionReplyOptions | MessagePayload | MessageOptions): Promise<Message | void> {
+    async back(msg: string | InteractionReplyOptions | MessagePayload | MessageOptions): Promise<Message<boolean> | InteractionResponse<boolean> | undefined> {
         if (this.isMsg(this.raw)) {
             return await this.raw.channel.send(msg as string | MessagePayload | MessageOptions);
         }
-        if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
+        if ((this.raw.isCommand()) || (this.raw.isContextMenuCommand())){ 
         return await this.raw.reply(msg as InteractionReplyOptions)
         }
     }
 
     async backPhoto(photo: string | Buffer, text?: string): Promise<unknown> {
-        const file = new MessageAttachment(photo);
+        const file = new AttachmentBuilder(photo);
         if (this.isMsg(this.raw)) {
             return await this.raw.channel.send({files: [file], content: text });
         }
-        if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
+        if (this.raw.isCommand() || (this.raw.isContextMenuCommand())){ 
         return await this.raw.followUp({files: [file], content: text})
         }
     }
@@ -65,7 +65,7 @@ class Adapter extends w0bMessage {
 
     async defer(): Promise<unknown> {
         if (!this.isMsg(this.raw)) {
-            if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
+            if (this.raw.isCommand() || (this.raw.isContextMenuCommand())){ 
             return await this.raw.deferReply();
         }
         }
@@ -73,14 +73,14 @@ class Adapter extends w0bMessage {
 
     async getTarget(): Promise<string | undefined> {
         if (!this.isMsg(this.raw)) {
-            if (!this.raw.isContextMenu()) return;
+            if (!this.raw.isContextMenuCommand()) return;
             return await this.raw.targetId
         }
     }
 
     async followUp (msg: string | MessagePayload | InteractionReplyOptions): Promise<unknown> {
         if (!this.isMsg(this.raw)) {
-            if (this.raw.isCommand() || (this.raw.isContextMenu())){ 
+            if (this.raw.isCommand() || (this.raw.isContextMenuCommand())){ 
             return this.raw.followUp(msg);
             }
             return
@@ -111,13 +111,13 @@ class Adapter extends w0bMessage {
         return msg.awaitMessageComponent({ time: 20000 })
     }
 
-    createRow(components: MessageButton[] | MessageSelectMenu[]): MessageActionRow {
-        return new MessageActionRow().addComponents(components)
+    createRow(components: ButtonBuilder[]): ActionRowBuilder<ButtonBuilder> {
+        return new ActionRowBuilder<ButtonBuilder>().addComponents(components)
     }
 
-    createBtn(lable: string, style: MessageButtonStyleResolvable = 'PRIMARY'): MessageButton {
+    createBtn(lable: string, style: ButtonStyle = 1): ButtonBuilder {
         this.btnCount++
-        return new MessageButton()
+        return new ButtonBuilder()
             .setCustomId(this.btnCount.toString())
             .setLabel(lable)
             .setStyle(style)

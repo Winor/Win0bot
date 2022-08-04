@@ -1,6 +1,7 @@
 import Commend from '../Commend'
 import * as db from '../db'
 import type w0bMessage from '../adapters/discord/adapter'
+import { ApplicationCommandType } from 'discord.js'
 
 export default class Notify extends Commend {
 constructor() {
@@ -12,7 +13,7 @@ constructor() {
         platform: "discord",
         lvl: 0,
         discord: {
-            type: 'USER'
+            type: ApplicationCommandType.User
         }
     })
 }

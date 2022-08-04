@@ -20,7 +20,7 @@ export default class Echo extends Commend {
             discord: {
                 options: [{
                     name: 'input',
-                    type: 'STRING',
+                    type: 3,
                     description: 'give/remove role name',
                     required: true,
                   }]

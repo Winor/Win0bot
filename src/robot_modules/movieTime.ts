@@ -15,7 +15,7 @@ export default class Movie extends Commend {
             discord: {
                 options: [{
                 name: 'name',
-                type: 'STRING',
+                type: 3,
                 description: 'Movie name',
                 required: true,
               }]

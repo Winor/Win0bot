@@ -3,7 +3,7 @@ import client from  "./djsClient"
 import Message from './adapter'
 import * as db from '../../db'
 import contains from '../../listenerMap'
-import type { VoiceState, Activity, GuildMember, PartialGuildMember } from 'discord.js'
+import { VoiceState, Activity, GuildMember, PartialGuildMember, ChannelType, ActivityType } from 'discord.js'
 client.login(config.discordToken)
 
 // on rdy
@@ -90,7 +90,7 @@ client.on('guildMemberRemove', user => {
 
   // on interaction
   client.on('interactionCreate', interaction => {
-    if ((interaction.isCommand()) || (interaction.isContextMenu())) {
+    if ((interaction.isCommand()) || (interaction.isContextMenuCommand())) {
       const w0bMsg = new Message(interaction)
       if (!interaction.channel) return;
       contains("name", w0bMsg)
@@ -109,10 +109,10 @@ client.on('guildMemberRemove', user => {
     try {
       if (voiceState.member) {
       const channel = await voiceState.guild.channels.cache.get(textCH)
-      if (channel?.type !== 'GUILD_TEXT') return;
-      await channel.permissionOverwrites.edit(voiceState?.member.id, {VIEW_CHANNEL: view})
+      if (channel?.type !== ChannelType.GuildText) return;
+      await channel.permissionOverwrites.edit(voiceState?.member.id, {ViewChannel: view})
       if (view) {
-        if (channel.isText()){
+        if (channel.isTextBased()){
         await channel.send(`${voiceState.member} ${config.voiceChannleJoinMsg}`)
         }
       }
@@ -156,7 +156,7 @@ async function notify (oldState: VoiceState, newState: VoiceState) {
       if (key === newState.member?.id) {
         value.forEach(async (user) => {
           const clientUser = await client.users.fetch(user)
-          if((newState.channel?.permissionsFor(clientUser)?.has("VIEW_CHANNEL") && (!newState.channel?.members.has(clientUser.id)))) {
+          if((newState.channel?.permissionsFor(clientUser)?.has("ViewChannel") && (!newState.channel?.members.has(clientUser.id)))) {
           clientUser.send(`Your friend <@${key}> just joined ${newState.channel} over at ${newState.guild}\n ${'```'} To stop notifications for this user right click on his name over at ${newState.guild} server and select apps>notify again${'```'}`)
         }
         })
@@ -218,7 +218,7 @@ function upperCaseString (string: string) {
 
   client.on('presenceUpdate', (oldPresence, newPresence) => {
     newPresence.activities.forEach((activity: Activity) => {
-      if (activity.type === 'PLAYING') {
+      if (activity.type === ActivityType.Playing) {
         const game = upperCaseString(activity.name)
         const guildRole = newPresence.guild?.roles.cache.find((r => r.name === game))
         if (guildRole) {

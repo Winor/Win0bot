@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Interaction, GuildMember, Snowflake, Message, MessageSelectMenu, MessageActionRow, SelectMenuInteraction } from 'discord.js';
+import { Interaction, GuildMember, Message, SelectMenuBuilder, ActionRowBuilder, SelectMenuInteraction, ComponentType } from 'discord.js';
 import {
     AudioPlayerStatus,
     AudioResource,
@@ -28,7 +28,7 @@ export default class Play extends Commend {
             discord: {
                 options: [{
                 name: 'song',
-                type: 'STRING' as const,
+                type: 3,
                 description: 'The URL of the song to play',
                 required: true,
             }]
@@ -50,16 +50,16 @@ export default class Play extends Commend {
                     const videos = filter.get('Type')?.get('Video')
                     if(videos && videos.url) {
                     const searchResults = await ytsr(videos.url, {limit: 8});
-                    const row = new MessageActionRow()
+                    const row = new ActionRowBuilder<SelectMenuBuilder>()
                         .addComponents(
-                            new MessageSelectMenu()
+                            new SelectMenuBuilder()
                                 .setCustomId('select')
                                 .setPlaceholder('Nothing selected')
                                 .addOptions(searchResults.items.map((item, i) =>({ label: (item as Video).title, value: (item as Video).url })))
                                 )
                     const newMsg = await msg.followUp({ content: 'Select a song to play...', components: [row] }) as Message | Interaction
                     const discordInput = await msg.collector(newMsg)
-                    if (discordInput?.componentType === "SELECT_MENU") {
+                    if (discordInput?.componentType === ComponentType.SelectMenu) {
                     url = (discordInput as SelectMenuInteraction).values[0]
                     await discordInput.update({ content:'Ok.', components: [] })
                     }

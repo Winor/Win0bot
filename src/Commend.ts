@@ -1,5 +1,6 @@
 import type { ApplicationCommandOptionData, ApplicationCommandType } from 'discord.js'
 import type { w0bMessage} from './types'
+import { ApplicationCommandOptionType } from 'discord.js'
 
 type DiscordSpecific = {
     options?: ApplicationCommandOptionData[],

@@ -1,4 +1,4 @@
-import { Interaction, Message, MessageButton } from 'discord.js';
+import { Interaction, Message, ButtonBuilder, ComponentType } from 'discord.js';
 import Commend from '../Commend'
 import type w0bMessage from '../adapters/discord/adapter'
 
@@ -19,7 +19,7 @@ async run(msg: w0bMessage): Promise<void> {
         await msg.defer()
         const ball = Math.floor(Math.random() * 3)
         
-        const btns: MessageButton[] = []
+        const btns: ButtonBuilder[] = []
         for (let i = 0; i < 3; i++) {       
             btns.push(msg.createBtn(`${i+1}`))
         }
@@ -27,7 +27,7 @@ async run(msg: w0bMessage): Promise<void> {
 
         const newMsg = await msg.followUp({ content: 'Where is the ball ?', components: [row] }) as Message | Interaction
         const input = await msg.collector(newMsg)
-        if (input?.componentType === "BUTTON") {
+        if (input?.componentType === ComponentType.Button) {
             if(input.customId === ball.toString()) {
                 await input.update({ content:'You are right !', components: [] })
             } else {

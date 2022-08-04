@@ -19,7 +19,7 @@ async run(msg: w0bMessage): Promise<void> {
     try {
         if (msg.raw.member instanceof GuildMember && msg.raw.member.voice.channel) {
         const channel = msg.raw.member.voice.channel;
-        if (msg.raw.member.permissions.has('MOVE_MEMBERS')) {
+        if (msg.raw.member.permissions.has('MoveMembers')) {
             if (!msg.raw.guild) {return}
         const members = []
         for (const [ ,member] of msg.raw.guild.members.cache) {
