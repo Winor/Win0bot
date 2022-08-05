@@ -28,12 +28,12 @@ async run(msg: w0bMessage): Promise<void> {
                 member.voice.setChannel(channel);
         }
     }
-    msg.back({content: `Okay I moved ${members.join(', ')} to your channle.`, ephemeral: true })
+    msg.back({content: `Okay I moved ${members.join(', ')} to your channel.`, ephemeral: true })
         } else {
             msg.back({content: `You don't have permission to move members.`, ephemeral: true })
         }
     } else {
-        msg.back({content: `You are not in a voice channle.`, ephemeral: true })
+        msg.back({content: `You are not in a voice channel.`, ephemeral: true })
     }
 
     } catch (e) {
