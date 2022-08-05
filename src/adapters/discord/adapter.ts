@@ -1,4 +1,4 @@
-import { Interaction, InteractionReplyOptions, Message, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageComponentInteraction, MessageOptions, MessagePayload, ButtonStyle, InteractionResponse } from "discord.js";
+import { Interaction, InteractionReplyOptions, Message, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, MessageComponentInteraction, MessageOptions, MessagePayload, ButtonStyle, InteractionResponse, InteractionDeferReplyOptions } from "discord.js";
 import w0bMessage from "../../Message"
 
     function isMsg(src: Message | Interaction): src is Message {
@@ -14,6 +14,10 @@ import w0bMessage from "../../Message"
         //?
         raw.options.data.forEach(opt => {
             if (opt.value) {
+                if (opt.attachment) {
+                    inputs.push(opt.attachment.url);
+                    return
+                }
                 inputs.push(opt.value.toString())
             }
 
@@ -63,10 +67,10 @@ class Adapter extends w0bMessage {
         return await oldMsg.edit(newMsg);
     }
 
-    async defer(): Promise<unknown> {
+    async defer(options?: InteractionDeferReplyOptions ): Promise<unknown> {
         if (!this.isMsg(this.raw)) {
             if (this.raw.isCommand() || (this.raw.isContextMenuCommand())){ 
-            return await this.raw.deferReply();
+            return await this.raw.deferReply(options);
         }
         }
     }
