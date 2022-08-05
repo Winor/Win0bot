@@ -17,7 +17,7 @@ fs.readdir(`${__dirname}/robot_modules`, (err, files) => {
                 if(cmd.platform !== "telegram") {
                     commandData.push({
                         name: cmd.name,
-                        ...(!["MESSAGE", "USER"].includes(cmd.discord?.type)) && {description: cmd.description ? cmd.description : "Runs a command"},
+                        ...(![2, 3].includes(cmd.discord?.type)) && {description: cmd.description ? cmd.description : "Runs a command"},
                         ...(cmd.discord?.options) && {options: cmd.discord?.options},
                         ...(cmd.discord?.type) && {type: cmd.discord?.type}
                     })  
