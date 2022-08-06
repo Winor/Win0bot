@@ -112,8 +112,12 @@ client.on('guildMemberRemove', user => {
       if (channel?.type !== ChannelType.GuildText) return;
       await channel.permissionOverwrites.edit(voiceState?.member.id, {ViewChannel: view})
       if (view) {
-        if (channel.isTextBased()){
-        await channel.send(`${voiceState.member} ${config.voiceChannleJoinMsg}`)
+        // if (channel.isTextBased()){
+        // await channel.send(`${voiceState.member} ${config.voiceChannleJoinMsg}`)
+        // }
+        //New voice channel
+        if (voiceState.channel?.type === ChannelType.GuildVoice) {
+          await voiceState.channel.send(`${voiceState.member} ${'joined the voice channel! \n \n here are some useful commands: \n ``/play`` <song name or youtube url> : Plays music in your channle\n ``/skip`` : Skip the currently playing song\n ``/pm`` <string> <?file> : Sends a private message to all the users in the same voice chat as you'}`)
         }
       }
     }
