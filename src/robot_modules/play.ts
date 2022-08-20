@@ -116,7 +116,7 @@ export default class Play extends Commend {
                     await msg.followUp(`Enqueued **${track.title}**`);
                 } catch (error) {
                     console.warn(error);
-                    await msg.back('Failed to play track, please try again later!');
+                    await msg.followUp('Failed to play track, please try again later!');
                 }
             }
         } catch (e) {
