@@ -8,6 +8,7 @@ import {exec as ytdl} from 'youtube-dl-exec';
 export interface TrackData {
 	url: string;
 	title: string;
+	thumbnail: string;
 	onStart: () => void;
 	onFinish: () => void;
 	onError: (error: Error) => void;
@@ -28,13 +29,15 @@ const noop = () => {};
 export class Track implements TrackData {
 	public readonly url: string;
 	public readonly title: string;
+	public readonly thumbnail: string;
 	public readonly onStart: () => void;
 	public readonly onFinish: () => void;
 	public readonly onError: (error: Error) => void;
 
-	private constructor({ url, title, onStart, onFinish, onError }: TrackData) {
+	private constructor({ url, title, thumbnail, onStart, onFinish, onError }: TrackData) {
 		this.url = url;
 		this.title = title;
+		this.thumbnail = thumbnail;
 		this.onStart = onStart;
 		this.onFinish = onFinish;
 		this.onError = onError;
@@ -101,6 +104,7 @@ export class Track implements TrackData {
 
 		return new Track({
 			title: info.videoDetails.title,
+			thumbnail: info.videoDetails.thumbnails[2].url,
 			url,
 			...wrappedMethods,
 		});

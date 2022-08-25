@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Interaction, GuildMember, Message, SelectMenuBuilder, ActionRowBuilder, SelectMenuInteraction, ComponentType } from 'discord.js';
+import { Interaction, GuildMember, Message, SelectMenuBuilder, ActionRowBuilder, SelectMenuInteraction, ComponentType, EmbedBuilder } from 'discord.js';
 import {
     AudioPlayerStatus,
     AudioResource,
@@ -40,7 +40,7 @@ export default class Play extends Commend {
         try {
             if (msg.guildId) {
                 let subscription = subscriptions.get(msg.guildId);
-                await msg.defer()
+                await msg.defer({ ephemeral: true })
                 // Extract the video URL from the command
                 const input = msg.text
                 let url = ''
@@ -57,7 +57,7 @@ export default class Play extends Commend {
                                 .setPlaceholder('Nothing selected')
                                 .addOptions(searchResults.items.map((item, i) =>({ label: (item as Video).title, value: (item as Video).url })))
                                 )
-                    const newMsg = await msg.followUp({ content: 'Select a song to play...', components: [row] }) as Message | Interaction
+                    const newMsg = await msg.followUp({ ephemeral: true, content: 'Select a song to play...', components: [row] }) as Message | Interaction
                     const discordInput = await msg.collector(newMsg)
                     if (discordInput?.componentType === ComponentType.SelectMenu) {
                     url = (discordInput as SelectMenuInteraction).values[0]
@@ -101,10 +101,26 @@ export default class Play extends Commend {
                     // Attempt to create a Track from the user's video URL
                     const track = await Track.from(url, {
                         onStart() {
-                            msg.followUp({ content: 'Now playing!', ephemeral: true }).catch(console.warn);
+                            const embed = new EmbedBuilder()
+                            .setTitle(track.title)
+                            .setAuthor({ name: 'Now Playing' })
+                            .setDescription('Music Player')
+                            .setColor('Green')
+                            .setImage(track.thumbnail)
+                            .setFooter({ text: `Requested by ${msg.raw.member?.user.username}`})
+                            .setTimestamp();
+                            msg.followUp({ embeds: [embed], ephemeral: false }).catch(console.warn);
                         },
                         onFinish() {
-                            msg.followUp({ content: 'Now finished!', ephemeral: true }).catch(console.warn);
+                            const embed = new EmbedBuilder()
+                            .setTitle(track.title)
+                            .setAuthor({ name: 'Finished playing' })
+                            .setDescription('Music Player')
+                            .setColor('Red')
+                            .setImage(track.thumbnail)
+                            .setFooter({ text: `Requested by ${msg.raw.member?.user.username}`})
+                            .setTimestamp();
+                            msg.followUp({ embeds: [embed], ephemeral: false }).catch(console.warn);
                         },
                         onError(error) {
                             console.warn(error);
@@ -113,7 +129,16 @@ export default class Play extends Commend {
                     });
                     // Enqueue the track and reply a success message to the user
                     subscription.enqueue(track);
-                    await msg.followUp(`Enqueued **${track.title}**`);
+                    // discord Embed
+                    const embed = new EmbedBuilder()
+                    .setTitle(track.title)
+                    .setAuthor({ name: 'Enqueued' })
+                    .setDescription('Music Player')
+                    .setColor('Yellow')
+                    .setImage(track.thumbnail)
+                    .setFooter({ text: `Requested by ${msg.raw.member?.user.username}`})
+                    .setTimestamp();
+                    await msg.followUp({embeds: [embed]});
                 } catch (error) {
                     console.warn(error);
                     await msg.followUp('Failed to play track, please try again later!');
