@@ -119,12 +119,18 @@ class Adapter extends w0bMessage {
         return new ActionRowBuilder<ButtonBuilder>().addComponents(components)
     }
 
-    createBtn(lable: string, style: ButtonStyle = 1): ButtonBuilder {
+    createBtn(lable: string, style: ButtonStyle = 1, url?: string): ButtonBuilder {
         this.btnCount++
+        if (url) {
+            return new ButtonBuilder()
+                .setLabel(lable)
+                .setStyle(5)
+                .setURL(url)
+        }
         return new ButtonBuilder()
-            .setCustomId(this.btnCount.toString())
-            .setLabel(lable)
-            .setStyle(style)
+        .setCustomId(this.btnCount.toString())
+        .setLabel(lable)
+        .setStyle(style)
     }
 }
 
